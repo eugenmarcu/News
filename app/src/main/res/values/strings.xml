@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">News</string>
+    <string name="title_sport">Sport</string>
+    <string name="title_technology">Technology</string>
+    <string name="title_education">Education</string>
+    <string name="title_economy">Economy</string>
+    <string name="title_movies">Movies</string>
+
+    <!-- Strings For Category Preference [CHAR LIMIT=30] -->
+    <string name="category_key" translatable="false">q</string>
+    <string name="category_default" translatable="false">@string/title_movies</string>
+
+    <!-- Label for category sport option [CHAR LIMIT=20] -->
+    <string name="settings_category_sport_value" translatable="false">sport</string>
+</resources>
