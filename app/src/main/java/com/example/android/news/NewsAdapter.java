@@ -1,20 +1,16 @@
 package com.example.android.news;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.InputStream;
+import com.bumptech.glide.Glide;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,12 +20,21 @@ import java.util.List;
  * Created by Eugen on 16-Jan-18.
  */
 
-public class NewsAdapter extends ArrayAdapter<News> {
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+
+    private Context mContext;
+    private OnItemClicked onClick;
+
+    public List<News> mNewsList;
 
     public NewsAdapter(Activity context, List<News> news) {
-        super(context, 0, news);
+        mContext = context;
+        mNewsList = news;
     }
 
+    public void addAll(List<News> news){
+        mNewsList.addAll(news);
+    }
 
     //format the date
     private String formatDate(String dateObject) {
@@ -44,68 +49,65 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
     }
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // Check if the existing view is being reused, otherwise inflate the view
-        View listItemView = convertView;
-        if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.list_item, parent, false);
-        }
-        News currentNews = getItem(position);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_item, parent, false);
 
-        //Set the headline
-        String title = currentNews.getHeadline();
-        TextView titleTextView = listItemView.findViewById(R.id.list_item_headline);
-        titleTextView.setText(title);
-
-        //Set the textTrails
-        String textTrails = currentNews.getTrailText();
-        TextView textTrailsView = listItemView.findViewById(R.id.list_item_trail_text);
-        textTrailsView.setText(textTrails);
-
-        //Set the thumbnail
-        String url = currentNews.getThumbnailUrl();
-        ImageView thumbnailView = listItemView.findViewById(R.id.list_item_thumbnail);
-        final AsyncTask<String, Void, Bitmap>  execute = new DownloadImageTask(thumbnailView)
-                .execute(url);
-
-
-        //Set the date
-        TextView newsDateTextView = listItemView.findViewById(R.id.list_item_date);
-
-        //Date date = toDate(currentNews.getDate());
-        String dateToDisplay = formatDate(currentNews.getDate());
-        newsDateTextView.setText(dateToDisplay);
-
-        return listItemView;
+        return new ViewHolder(itemView);
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
+    @Override
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        News currentNews = mNewsList.get(position);
+        holder.headlineTextView.setText(currentNews.getHeadline());
+        holder.trailTextView.setText(currentNews.getHeadline());
+        holder.dateTextView.setText(formatDate(currentNews.getDate()));
+        //Setting the cardView onClickListener
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClick.onItemClick(position);
             }
-            return mIcon11;
-        }
+        });
 
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
+        // loading thumbnail using Glide library
+        Glide.with(mContext).load(currentNews.getThumbnailUrl()).into(holder.thumbnailImageView);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mNewsList.size();
+    }
+
+    // declare interface for onItemClick
+    public interface OnItemClicked {
+        void onItemClick(int position);
+    }
+
+    //setting the clicked item on click
+    public void setOnClick(OnItemClicked onClick)
+    {
+        this.onClick=onClick;
     }
 
 
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView headlineTextView;
+        public TextView trailTextView;
+        public ImageView thumbnailImageView;
+        public TextView dateTextView;
+        public View cardView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            headlineTextView = itemView.findViewById(R.id.list_item_headline);
+            trailTextView = itemView.findViewById(R.id.list_item_trail_text);
+            thumbnailImageView = itemView.findViewById(R.id.list_item_thumbnail);
+            dateTextView = itemView.findViewById(R.id.list_item_date);
+            cardView = itemView.findViewById(R.id.news_item);
+        }
+
+    }
 }
