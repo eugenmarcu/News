@@ -13,6 +13,7 @@ public abstract class RecyclerViewOnScrollListener extends RecyclerView.OnScroll
 
     private int maxVisibleItemCount = 0;
     private boolean onLoading = false;
+    private int NEWS_PER_PAGE = 5;
     RecyclerView.LayoutManager mLayoutManager;
     Context mContext;
 
@@ -27,15 +28,15 @@ public abstract class RecyclerViewOnScrollListener extends RecyclerView.OnScroll
         int lastVisibleItemPosition;
         int totalItemCount = mLayoutManager.getItemCount();
         lastVisibleItemPosition = ((LinearLayoutManager) mLayoutManager).findLastVisibleItemPosition();
-        if(maxVisibleItemCount<lastVisibleItemPosition) {
+        if (maxVisibleItemCount < lastVisibleItemPosition) {
             maxVisibleItemCount = lastVisibleItemPosition;
-            if(lastVisibleItemPosition==totalItemCount-1)
+            if (lastVisibleItemPosition == totalItemCount - 1)
                 onLoading = true;
-        }
-        else onLoading = false;
-        if(onLoading) {
-            onLoadMore(totalItemCount/5+1);
-            Log.v("Scroll" , "Load more................");
+        } else onLoading = false;
+        if (onLoading) {
+            //load next page
+            onLoadMore(totalItemCount / NEWS_PER_PAGE + 1);
+            Log.v("Scroll", "Load more................");
         }
     }
 
