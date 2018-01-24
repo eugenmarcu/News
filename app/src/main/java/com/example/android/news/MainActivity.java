@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Uri baseUri = Uri.parse(REQUEST_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        uriBuilder.appendQueryParameter(getString(R.string.category_key), mCategory);
+        uriBuilder.appendQueryParameter("section", mCategory.toLowerCase());
         uriBuilder.appendQueryParameter("orderBy", "newest");
         uriBuilder.appendQueryParameter("page-size","5");
         uriBuilder.appendQueryParameter("page", String.valueOf(currentLoadPage));
@@ -174,7 +174,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         progressBar.setVisibility(View.GONE);
 
         //close swipe refreshing
-        mSwipeRefreshLayout.setRefreshing(false);
+        if(mSwipeRefreshLayout!=null)
+            mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

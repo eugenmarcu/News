@@ -40,7 +40,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private String formatDate(String dateObject) {
         Date date1 = new Date();
         try {
-            date1 = new SimpleDateFormat("LLL dd, yyyy").parse(dateObject);
+            date1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(dateObject);
         } catch (ParseException e) {
 
         }
