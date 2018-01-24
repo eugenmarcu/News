@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String REQUEST_URL = "http://content.guardianapis.com/search?show-fields=thumbnail,trailText&api-key=test";
 
     /**
-     * Constant value for the earthquake loader ID. We can choose any integer.
+     * Constant value for the news loader ID. We can choose any integer.
      * This really only comes into play if you're using multiple loaders.
      */
     private static final int NEWS_LOADER_ID = 1;
@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> news) {
-        //mNewsList = news;
         mAdapter.addAll(news);
         mAdapter.notifyDataSetChanged();
         if (mAdapter.mNewsList.size() == 0) {
